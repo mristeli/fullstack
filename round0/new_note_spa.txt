@@ -1,0 +1,27 @@
+note right of browser:
+User writes a new note and presses 'Save'
+end note
+
+note over browser:
+The browser adds the new note 
+in a list stored in its memory and
+redraws the list on the page then
+sends the new note to server
+end note
+
+browser->server: HTTP POST /new_note_spa {content: "Test..", date: ... }
+
+note over server:
+The server stores 
+the new note
+in its memory
+end note
+
+server->browser: HTTP 201 Created {"message":"note created"}
+
+note right of browser:
+201 tells us that the note was stored successfully
+but we don't do anything particular with that information
+end note
+
+

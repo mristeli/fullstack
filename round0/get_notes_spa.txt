@@ -1,0 +1,21 @@
+browser->server: HTTP GET /spa
+server->browser: HTML document
+browser->server: HTTP GET /main.css
+server->browser: main.css
+browser->server: HTTP GET /spa.js
+server->browser: spa.js
+
+note over browser:
+the browser executes spa.js which 
+queries the server for notes and
+registers an event handler to handle
+the storing of new notes 
+end note
+
+browser->server: HTTP GET /data.json
+server-->browser: [{ content: "Lorem ipsum...", date: "2019-09-13" }, ...]
+
+note over browser:
+the browser executes an event handler 
+which renders the notes on the page
+end note

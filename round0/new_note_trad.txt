@@ -1,0 +1,15 @@
+note right of browser:
+User writes a new note and presses 'Save'
+end note
+browser->server: HTTP POST /new_note "note=text from user"
+note over server:
+The server stores 
+the new note in memory
+end note
+server->browser: HTTP 302 Location: /notes
+note over browser:
+The browser reloads the page /notes 
+and the server will now include 
+the new note in the data.json
+end note
+
