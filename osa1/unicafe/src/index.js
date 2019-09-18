@@ -11,14 +11,32 @@ const Button = ({onClick, text}) => (
   <button onClick={onClick}>{text}</button>
 )
 
-const Statistics = ({good, neutral, bad}) => (
-    <div>
+const Statistic = ({text, value}) => (
+  <tr><td>{text}</td><td>{value}</td></tr>
+)
+
+const Statistics = ({good, neutral, bad}) => {
+  const countAll = good + neutral + bad
+  if(countAll === 0) {
+    return <div>
+        <h1>statistics</h1>
+        <p>No feedback given</p>
+      </div>  
+  }
+  return <div>
       <h1>statistics</h1>
-      <p>good {good}</p>
-      <p>neutral {neutral}</p>
-      <p>bad {bad}</p>
+      <table>
+        <tbody>
+          <Statistic text="good" value={good}/>
+          <Statistic text="neutral" value={neutral}/>
+          <Statistic text="bad" value={bad}/>
+          <Statistic text="all" value={countAll}/>
+          <Statistic text="average" value={(good - bad) / countAll}/>
+          <Statistic text="positive" value={good / countAll * 100 + ' %'} />
+        </tbody>
+      </table>
     </div>
-) 
+}
 
 const App = () => {
   // tallenna napit omaan tilaansa
