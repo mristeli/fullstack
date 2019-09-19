@@ -1,19 +1,31 @@
 import React, { useState } from 'react'
+import Filter from './components/Filter'
+import AddContact from './components/AddContact'
+import Contacts from './components/Contacts'
 
 const App = () => {
-  const [ persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '6666-6666' }
-  ]) 
+  const [persons, setPersons] = useState([
+    { name: 'Arto Hellas', number: '040-123456' },
+    { name: 'Ada Lovelace', number: '39-44-5323523' },
+    { name: 'Dan Abramov', number: '12-43-234345' },
+    { name: 'Mary Poppendieck', number: '39-23-6423122' }
+  ])
+
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
+  const [ filter, setFilter] = useState('')
 
   const findByName = (name) => 
     (entry) => entry.name === name  
 
-  const handleNameChange = (event) => setNewName(event.target.value)
-  const handleNumberChange = (event) => setNewNumber(event.target.value)
+  const handleNameChange = (event) => 
+    setNewName(event.target.value)
+  const handleNumberChange = (event) => 
+    setNewNumber(event.target.value)
+  const handleFilterChange = (event) => 
+    setFilter(event.target.value.toLowerCase())
 
-  const addNewEntry = (event) => {
+  const addNewContact = (event) => {
     event.preventDefault();
     if(persons.find(findByName(newName))) {
       alert(`${newName} is already added to phonebook`)
@@ -27,31 +39,18 @@ const App = () => {
     }
   }
 
-  const rows = () => 
-    persons.map(p => <p key={p.name}>{p.name} {p.number}</p>)
-
   return (
     <div>
       <h2>Phonebook</h2>
-      <form>
-        <div>
-          name: <input 
-            value={newName} 
-            onChange={handleNameChange} 
-              />
-        </div>
-        <div>
-          number: <input 
-            value={newNumber} 
-            onChange={handleNumberChange} 
-              />
-        </div>
-        <div>
-          <button type="submit" onClick={addNewEntry}>add</button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
-      {rows()}
+      <Filter value={filter} onChange={handleFilterChange} />
+      <h3>Add a new</h3>
+      <AddContact
+        newName={newName} handleNameChange={handleNameChange}
+        newNumber={newNumber} handleNumberChange={handleNumberChange}
+        addNewContact={addNewContact}
+      />
+      <h3>Contacts</h3>
+      <Contacts filter={filter} contacts={persons} />
     </div>
   )
 
