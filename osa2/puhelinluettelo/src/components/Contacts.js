@@ -1,7 +1,7 @@
 import React from 'react'
 
 const Contact = ({name, number, onClick }) => (
-  <p>{name} {number} <button onClick={onClick}>delete</button></p>
+  <li>{name} {number} <button onClick={onClick}>delete</button></li>
 )
 
 const toShow = (filter, contacts) => contacts.filter(({name, number}) => 
@@ -16,9 +16,9 @@ const rows = (filter, contacts, deleteRef) =>
       onClick={() => deleteRef(c)} />)
    
 const Contacts = ({filter, contacts, deleteRef}) => {
-  return <div> 
+  return <ul> 
       {rows(filter, contacts, deleteRef)}
-    </div>
+    </ul>
 }
 
 export default Contacts
