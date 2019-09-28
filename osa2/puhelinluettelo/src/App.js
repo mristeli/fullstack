@@ -55,6 +55,8 @@ const App = () => {
         setPersons(persons.concat(returnedContact))
         setNewNumber('')
         setNewName('')
+      }).catch(error => {
+        showErrorMessage(error.response.data.error)
       })
     } else if (window.confirm(`${newName} is already added to phonebook, 
       replace the old number with the new one?`)) {
@@ -66,7 +68,7 @@ const App = () => {
         setPersons(persons.map(e => e.id !== contactToUpdate.id 
           ? e : updatedContact))
       }).catch(error => {
-        showErrorMessage(`Note ${newName} was already removed from server`)
+        showErrorMessage(`Error! Perhaps ${newName} was already removed from server?`)
         setPersons(persons.filter(p => p.id !== contactToUpdate.id))
       })
     } 
