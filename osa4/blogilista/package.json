@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "watch": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --verbose",
     "lint": "eslint ."
   },
   "author": "Matti Risteli",
@@ -22,5 +22,8 @@
     "eslint": "^6.5.1",
     "jest": "^24.9.0",
     "nodemon": "^1.19.4"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
