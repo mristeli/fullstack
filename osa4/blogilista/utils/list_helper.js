@@ -22,42 +22,26 @@ const favoriteBlog = blogs => {
     : blogs.reduce(reducer, blogs[0])
 }
 
-const mostXReducer = f => (most, item) => f(most) < f(item) ? item : most
-const authorAndFieldReducer = (resultName, getter, increment) => (result, item) => {
-  const currentValue = result[item.author] ? getter(result[item.author]) : 0
-  return { ...result,
-    [item.author] : {
-      [resultName] : currentValue + increment(item),
-      'author' : item.author
+
+const mostX = (fieldName, increment) => blogs => {
+  // list of blogs -> author : { author, fieldName } object
+  const authorAndFieldReducer = (result, item) => {
+    const currentValue = result[item.author] ? result[item.author][fieldName] : 0
+    return { ...result,
+      [item.author] : {
+        [fieldName] : currentValue + increment(item),
+        'author' : item.author
+      }
     }
   }
-}
-
-const mostBlogs = blogs => {
-  const authorAndBlogsReducer = authorAndFieldReducer(
-    'blogs',
-    item => item.blogs,
-    blog => blog|1
-  )
-  return blogs.length === 0 
+  return blogs.length === 0
     ? {}
-    : Object.values(blogs.reduce(authorAndBlogsReducer, {}))
-      .reduce(mostXReducer(item => item.blogs))
+    : Object.values(blogs.reduce(authorAndFieldReducer, {}))
+      .reduce((most, item) => most[fieldName] < item[fieldName] ? item : most)
 }
 
-const mostLikes = blogs => {
-  const authorAndLikesReducer = authorAndFieldReducer(
-    'likes',
-    item => item.likes,
-    blog => blog.likes
-  )
-
-  return blogs.length === 0 
-    ? {}
-    : Object.values(blogs.reduce(authorAndLikesReducer, {}))
-      .reduce(mostXReducer(item => item.likes))
-}
-
+const mostBlogs = mostX('blogs', item => item|1) // item|1 instead of 1 to get rid of eslint error)
+const mostLikes = mostX('likes', item => item.likes)
 
 module.exports = {
   dummy, totalLikes, favoriteBlog, mostBlogs, mostLikes
