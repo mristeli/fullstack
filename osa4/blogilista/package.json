@@ -4,10 +4,10 @@
   "description": "Blogilista",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "watch": "nodemon index.js",
-    "test": "jest --verbose",
-    "lint": "eslint ."
+    "start": "NODE_ENV=production node index.js",
+    "watch": "NODE_ENV=development nodemon index.js",
+    "lint": "eslint .",
+    "test": "NODE_ENV=test jest --verbose --runInBand"
   },
   "author": "Matti Risteli",
   "license": "MIT",
@@ -21,7 +21,8 @@
     "cross-env": "^6.0.3",
     "eslint": "^6.5.1",
     "jest": "^24.9.0",
-    "nodemon": "^1.19.4"
+    "nodemon": "^1.19.4",
+    "supertest": "^4.0.2"
   },
   "jest": {
     "testEnvironment": "node"

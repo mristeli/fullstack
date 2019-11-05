@@ -24,7 +24,7 @@ const favoriteBlog = blogs => {
 
 
 const mostX = (fieldName, increment) => blogs => {
-  // list of blogs -> author : { author, fieldName } object
+  // list of blogs -> author : { author : X, fieldName : sum of increment ret values for items } object
   const authorAndFieldReducer = (result, item) => {
     const currentValue = result[item.author] ? result[item.author][fieldName] : 0
     return { ...result,
