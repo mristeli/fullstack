@@ -90,6 +90,40 @@ test('a blog with no title & url is rejected', async () => {
     .expect(400)
 })
 
+test('blog can be deleted', async () => {
+  const originalBlogs = await helper.blogsInDb()
+  const blogToDelete = originalBlogs[0]
+
+  await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .expect(204)
+
+  const blogsAfterDeletion = await helper.blogsInDb()
+
+  expect(blogsAfterDeletion.length).toBe(
+    helper.initialBlogs.length - 1
+  )
+
+  const contents = blogsAfterDeletion.map(r => r.title)
+  expect(contents).not.toContain(blogToDelete.title)
+})
+
+test('blog can be updated', async () => {
+  const originalBlogs = await helper.blogsInDb()
+  const blogToUpdate = originalBlogs[0]
+
+  await api
+    .put(`/api/blogs/${blogToUpdate.id}`)
+    .send({ likes : blogToUpdate.likes + 2 })
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsAfterUpdate = await helper.blogsInDb()
+  const updatedBlog = blogsAfterUpdate.find(
+    b => b.title === blogToUpdate.title
+  )
+  expect(updatedBlog.likes).toBe(blogToUpdate.likes + 2)
+})
 
 afterAll(() => {
   mongoose.connection.close()
