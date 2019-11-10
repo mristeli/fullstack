@@ -1,10 +1,11 @@
 POST http://localhost:3001/api/blogs HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1yaXN0ZWxpIiwiaWQiOiI1ZGM2YTdlZDY4NGZkYjMzMGUwZWNmZGIiLCJpYXQiOjE1NzMzOTc3ODV9.h27Dizw3bjF_m6LMQfsPeFHZ8Rjdjwfn90iS2Ipt-ik
 
 {
-  "title" : "Kolme", 
-  "author" : "Kirjailija",
-  "url" : "http://example.com/blogs/kolmas",
-  "likes" : "111"  
+  "title" : "Matin uusi login", 
+  "author" : "Toinen testaaja",
+  "likes" : 56,
+  "url" : "http://example.com/blogs/bilateralrelations"
 }
 
