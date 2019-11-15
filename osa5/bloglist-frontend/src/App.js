@@ -31,8 +31,7 @@ function App() {
     }
   }, [])
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
+  const handleLogin = async () => {
     try {
       const user = await loginService.login({
         username, password
@@ -47,7 +46,7 @@ function App() {
     }
   }
 
-  const handleLogout = async (event) => {
+  const handleLogout = (event) => {
     event.preventDefault()
     window.localStorage.removeItem('loggedInUser')
     setUser(null)
@@ -74,6 +73,7 @@ function App() {
     })
     setTimeout(setMessage, 5000, null)
   }
+
   const showError = text => {
     setMessage({
       text,
@@ -91,10 +91,10 @@ function App() {
     )
   }
 
-  const createBlog = (blog) => {
-    blogService.create(blog)
+  const createBlog = async (blog) => {
+    const created = await blogService.create(blog)
     blogFormRef.current.toggleVisibility()
-    setBlogs(blogs.concat(blog))
+    setBlogs(blogs.concat(created))
     showMessage(`a new blog ${blog.title} by ${blog.author} added`)
   }
 

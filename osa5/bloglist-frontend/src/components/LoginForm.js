@@ -8,9 +8,15 @@ const LoginForm = ({
   username,
   password
 }) => {
+
+  const onSubmit = (event) => {
+    event.preventDefault()
+    handleLogin()
+  }
+
   return (
     <div>
-      <form onSubmit={handleLogin}>
+      <form onSubmit={onSubmit}>
         <div>
       username
           <input
