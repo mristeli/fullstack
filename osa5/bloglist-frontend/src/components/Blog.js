@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 const Blog = ({ blog, addLike, removeBlog, loggedInUser }) => {
   const blogStyle = {
-    paddingTop: 10,
+    paddingTop: 5,
     paddingLeft: 2,
     border: 'solid',
     borderWidth: 1,
@@ -12,7 +12,6 @@ const Blog = ({ blog, addLike, removeBlog, loggedInUser }) => {
 
   const [showDetails, setShowDetails] = useState(false)
 
-  const showWhenDetailsHidden = { display: showDetails ? 'none' : '' }
   const showWhenDetailsVisible= { display: showDetails ? '' : 'none' }
 
   const toggleShowDetails = ({ target }) => {
@@ -32,12 +31,11 @@ const Blog = ({ blog, addLike, removeBlog, loggedInUser }) => {
   }
 
   return (
-    <div style={blogStyle}>
-      <div style={showWhenDetailsHidden} onClick={toggleShowDetails}>
-        {blog.title} {blog.author}
-      </div>
-      <div style={showWhenDetailsVisible} onClick={toggleShowDetails}>
+    <div className='blogEntry' style={blogStyle} onClick={toggleShowDetails}>
+      <div className='basicInfo'>
         <p>{blog.title} {blog.author}</p>
+      </div>
+      <div className='details' style={showWhenDetailsVisible}>
         <p><a href={blog.url}>{blog.url}</a></p>
         <p>{blog.likes} {blog.likes !== 1 ? 'likes' : 'like'} <button onClick={likeHandler}>like</button></p>
         {blog.user && <p>Added by {blog.user.name}</p>}
