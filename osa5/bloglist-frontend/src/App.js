@@ -53,7 +53,7 @@ function App() {
   }
 
   const loginForm = () => (
-    <div>
+    <div className='loginForm'>
       <h2>Log in to application</h2>
       <Notification message={message} />
       <LoginForm
@@ -121,7 +121,7 @@ function App() {
   const blogFormRef = React.createRef()
 
   const blogList = () => (
-    <div>
+    <div className='blogList'>
       <h2>blogs</h2>
       <Notification message={message} />
 
