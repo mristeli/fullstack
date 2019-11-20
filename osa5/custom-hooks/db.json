@@ -1,0 +1,55 @@
+{
+  "notes": [
+    {
+      "content": "custom-hooks are awesome!",
+      "id": 1
+    },
+    {
+      "content": "best feature ever <3",
+      "id": 2
+    },
+    {
+      "content": "new note from custom hook",
+      "id": 3
+    },
+    {
+      "content": "second new note from custom hook",
+      "id": 4
+    },
+    {
+      "content": "neljäs note ",
+      "id": 5
+    },
+    {
+      "content": "viies note",
+      "id": 6
+    }
+  ],
+  "persons": [
+    {
+      "name": "mluukkai",
+      "number": "040-5483923",
+      "id": 1
+    },
+    {
+      "name": "Olga",
+      "number": "123494",
+      "id": 2
+    },
+    {
+      "name": "Uusi numero",
+      "number": " 2312",
+      "id": 3
+    },
+    {
+      "name": "kolmas numer",
+      "number": "959595",
+      "id": 4
+    },
+    {
+      "name": "Matti",
+      "number": "Testaa",
+      "id": 5
+    }
+  ]
+}
