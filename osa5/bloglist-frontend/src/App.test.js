@@ -1,6 +1,6 @@
 import React from 'react'
 import {
-  render, waitForElement 
+  render, waitForElement
 } from '@testing-library/react'
 jest.mock('./services/blogs')
 import App from './App'
@@ -38,8 +38,6 @@ describe('<App />', () => {
     )
 
     const blogList = component.container.querySelectorAll('.blogEntry')
-    expect(blogList.length).toBe(4) 
-
-
+    expect(blogList.length).toBe(4)
   })
 })

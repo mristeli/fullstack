@@ -7,13 +7,15 @@ import CreateBlogForm from './components/CreateBlogForm'
 import Togglable from './components/Togglable'
 import LoginForm from './components/LoginForm'
 
+import  { useField } from './hooks'
+
 function App() {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-
   const [ message, setMessage ] = useState(null)
+
+  const username = useField('text')
+  const password = useField('password')
 
   useEffect(() => {
     blogService.getAll()
@@ -34,13 +36,13 @@ function App() {
   const handleLogin = async () => {
     try {
       const user = await loginService.login({
-        username, password
+        username: username.value, password: password.value
       })
       window.localStorage.setItem('loggedInUser', JSON.stringify(user))
       blogService.setToken(user.token)
       setUser(user)
-      setUsername('')
-      setPassword('')
+      username.reset()
+      password.reset()
     } catch(exception) {
       showError('wrong username or password')
     }
@@ -57,10 +59,8 @@ function App() {
       <h2>Log in to application</h2>
       <Notification message={message} />
       <LoginForm
-        username={username}
-        password={password}
-        handleUsernameChange={({ target }) => setUsername(target.value)}
-        handlePasswordChange={({ target }) => setPassword(target.value)}
+        usernameField={username}
+        passwordField={password}
         handleLogin={handleLogin}
       />
     </div>
