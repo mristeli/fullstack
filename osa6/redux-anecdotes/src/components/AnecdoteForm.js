@@ -1,28 +1,20 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { showNotification, removeNotification } from '../reducers/notificationReducer'
+import { setNotification } from '../reducers/notificationReducer'
 import { newAnecdote } from '../reducers/anecdoteReducer'
 
 const AnecdoteForm = ({ 
-  notification,
   newAnecdote,
-  showNotification,
-  removeNotification
+  setNotification
  }) => {
-  const addAnecdote = (event) => {
+  const addAnecdote = async (event) => {
     event.preventDefault()
-    const anecdote = event.target.anecdote.value
-    newAnecdote(anecdote)
-   
-    const [, removeHandle] = notification 
-    if(removeHandle !== -1) {
-      clearTimeout(removeHandle)
-    }
-    showNotification(
-      `anecdote ${anecdote} added`,
-      setTimeout(() => removeNotification(), 5000)
-    )
+
+    const content = event.target.anecdote.value
     event.target.anecdote.value = ''
+    newAnecdote(content)
+
+    setNotification(`anecdote ${content} added`, 3)
   }
   
   return (
@@ -44,5 +36,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { newAnecdote, showNotification, removeNotification }
+  { newAnecdote, setNotification }
 )(AnecdoteForm)
