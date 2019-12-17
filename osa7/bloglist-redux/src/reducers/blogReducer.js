@@ -27,7 +27,7 @@ export const removeBlog = (blog) => {
     const id = blog.id
     await blogService.removeBlog(id)
     dispatch({
-      type: 'REMOVE_BLOGS',
+      type: 'REMOVE_BLOG',
       data: { id }
     })
   }

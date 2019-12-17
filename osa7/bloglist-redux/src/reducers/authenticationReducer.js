@@ -1,25 +1,44 @@
-const initialState = null
+import blogService from '../services/blogs'
 
-export const setUser = (user) => {
+export const initializeAuthentication = () => {
   return async dispatch => {
+    const loggedInUserJSON = window.localStorage.getItem('loggedInUser')
+    if(loggedInUserJSON) {
+      const user = JSON.parse(loggedInUserJSON)
+      dispatch({
+        type: 'SET_USER',
+        data: user
+      })
+    }
+  }
+}
+
+export const setLoggedInUser = (user) => {
+  return async dispatch => {
+    blogService.setToken(user.token)
+    window.localStorage.setItem('loggedInUser', JSON.stringify(user))  
     dispatch({
       type: 'SET_USER',
-      data: message,
-      timeoutHandle: setTimeout(() => {
-        dispatch({
-          type : 'REMOVE_NOTIFICATION'
-        })
-      }, timeout * 1000)
+      data: user
     })
   }
 }
 
-const authenticationReducer = (state = initialState, action) => {
+export const removeUser = () => {
+  return async dispatch => {
+    window.localStorage.removeItem('loggedInUser')
+    dispatch({
+      type: 'REMOVE_USER'
+    })
+  }
+}
+
+const authenticationReducer = (state = null, action) => {
   switch (action.type) {
-    case 'SET_USER':
-      
-  case 'REMOVE_NOTIFICATION': 
-    return ['', -1]
+  case 'SET_USER':
+    return action.data
+  case 'REMOVE_USER':
+    return null
   default:
     return state
   }

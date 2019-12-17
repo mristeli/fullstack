@@ -1,11 +1,22 @@
 import React from 'react'
-import Blog from './Blog'
 import CreateBlogForm from './CreateBlogForm'
 import Togglable from './Togglable'
 import { connect } from 'react-redux'
 
-const BlogList = ({ blogs, user }) => {
+import {
+  Link
+} from 'react-router-dom'
+
+const BlogList = ({ blogs }) => {
   const blogFormRef = React.createRef()
+
+  const blogStyle = {
+    paddingTop: 5,
+    paddingLeft: 2,
+    border: 'solid',
+    borderWidth: 1,
+    marginBottom: 5
+  }
 
   return (
     <div className='blogList'>
@@ -15,15 +26,17 @@ const BlogList = ({ blogs, user }) => {
       </Togglable>
 
       {blogs && blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} loggedInUser={user} />
+        <div key={blog.id} style={blogStyle}>
+          <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+        </div>
       )}
     </div>
   )
 }
-const mapStateToProps = (state, ownProps) => {
+
+const mapStateToProps = (state) => {
   return {
-    blogs: state.blogs,
-    user: ownProps.user
+    blogs: state.blogs
   }
 }
 

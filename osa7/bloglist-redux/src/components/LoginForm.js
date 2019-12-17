@@ -1,42 +1,63 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 
-const LoginForm = ({
-  handleLogin,
-  usernameField,
-  passwordField
-}) => {
+import { setLoggedInUser } from '../reducers/authenticationReducer'
+import { showError, removeMessage } from '../reducers/notificationReducer'
+
+import loginService from '../services/login'
+
+import Notification from '../components/Notification'
+import { useField } from '../hooks'
+
+
+const LoginForm = ({ setLoggedInUser, showError, removeMessage }) => {
+
+  const username = useField('text')
+  const password = useField('password')
 
   const onSubmit = (event) => {
     event.preventDefault()
-    handleLogin()
+    handleLogin(event.target)
+  }
+
+  const handleLogin = async (target) => {
+    try {
+      const user = await loginService.login({
+        username: target.username.value, password: target.password.value
+      })
+      removeMessage()
+      setLoggedInUser(user)
+    } catch(exception) {
+      showError('wrong username or password', 5)
+    }
   }
 
   return (
-    <div>
-      <form onSubmit={onSubmit}>
-        <div>
-      username
-          <input name="Username"
-            {...usernameField.attr}
-          />
-        </div>
-        <div>
-      password
-          <input name="Password"
-            {...passwordField.attr}
-          />
-        </div>
-        <button type="submit">login</button>
-      </form>
+    <div className='loginForm'>
+      <h2>Log in to application</h2>
+      <Notification />
+      <div>
+        <form onSubmit={onSubmit}>
+          <div>
+          username
+            <input name="username"
+              {...username.attr}
+            />
+          </div>
+          <div>
+          password
+            <input name="password"
+              {...password.attr}
+            />
+          </div>
+          <button type="submit">login</button>
+        </form>
+      </div>
     </div>
   )
 }
 
-LoginForm.propTypes = {
-  handleLogin: PropTypes.func.isRequired,
-  usernameField: PropTypes.object.isRequired,
-  passwordField: PropTypes.object.isRequired
-}
-
-export default LoginForm
+export default connect(
+  null,
+  { setLoggedInUser, showError, removeMessage }
+)(LoginForm)
