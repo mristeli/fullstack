@@ -5,6 +5,7 @@ export const initializeAuthentication = () => {
     const loggedInUserJSON = window.localStorage.getItem('loggedInUser')
     if(loggedInUserJSON) {
       const user = JSON.parse(loggedInUserJSON)
+      blogService.setToken(user.token)
       dispatch({
         type: 'SET_USER',
         data: user

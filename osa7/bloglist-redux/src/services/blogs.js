@@ -7,34 +7,36 @@ const setToken = newToken => (
   token = `bearer ${newToken}`
 )
 
+function getConfig() {
+  return {
+    headers: { Authorization: token }
+  }
+}
+
 const getAll = async () => {
   const response = await axios.get(baseUrl)
   return response.data
 }
 
 const create = async newBlog => {
-  const config = {
-    headers: { Authorization: token }
-  }
-
-  const response =  await axios.post(baseUrl, newBlog, config)
+  const response =  await axios.post(baseUrl, newBlog, getConfig())
   return response.data
 }
 
 const update = async blog => {
-  const config = {
-    headers: { Authorization: token }
-  }
+  const response =  await axios.put(`${baseUrl}/${blog.id}`, blog, getConfig())
+  return response.data
+}
 
-  const response =  await axios.put(`${baseUrl}/${blog.id}`, blog, config)
+const addComment = async (blog, comment) => {
+  const response = await axios.post(`${baseUrl}/${blog.id}/comments`, {
+    comment
+  }, getConfig())
   return response.data
 }
 
 const remove = async blog => {
-  const config = {
-    headers: { Authorization: token }
-  }
-  await axios.delete(`${baseUrl}/${blog.id}`, config)
+  await axios.delete(`${baseUrl}/${blog.id}`, getConfig())
 }
 
 export default {
@@ -42,5 +44,6 @@ export default {
   create,
   update,
   remove,
+  addComment,
   setToken
 }

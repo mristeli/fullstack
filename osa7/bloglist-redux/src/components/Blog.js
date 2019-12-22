@@ -1,8 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { addLike, removeBlog } from '../reducers/blogReducer'
+import { addComment, addLike, removeBlog } from '../reducers/blogReducer'
 
-const Blog = ({ blog, loggedInUser, addLike, removeBlog }) => {
+const Blog = ({ blog, loggedInUser, addLike, removeBlog, addComment }) => {
   if ( blog === undefined ) {
     return null
   }
@@ -17,14 +17,31 @@ const Blog = ({ blog, loggedInUser, addLike, removeBlog }) => {
     removeBlog(blog)
   }
 
+  const commentHandler = (event) => {
+    event.preventDefault()
+    const comment = event.target.comment.value
+    event.target.comment.value = ''
+    addComment(blog, comment)
+  }
+
   return (
     <div>
-      <h2>{blog.title}</h2>
+      <h2>{blog.title} {blog.author}</h2>
       <p><a href={blog.url}>{blog.url}</a></p>
       <p>{blog.likes} {blog.likes !== 1 ? 'likes' : 'like'} <button onClick={likeHandler}>like</button></p>
       {blog.user && <p>Added by {blog.user.name}</p>}
       {blog.user && blog.user.username === loggedInUser.username &&
         <p><button onClick={removeHandler}>remove</button></p>}
+
+      <h3>comments</h3>
+      <form onSubmit={commentHandler}>
+        <input type="text" name="comment"></input> <button type="submit">Add comment</button>
+      </form>
+      <ul>
+        {blog.comments && blog.comments.map((c, i) =>
+          <li key={i}>{c}</li>
+        )}
+      </ul>
     </div>
   )
 }
@@ -34,4 +51,4 @@ const mapStateToProps = (state, ownProps) => ({
   loggedInUser: state.user
 })
 
-export default connect(mapStateToProps, { addLike, removeBlog })(Blog)
+export default connect(mapStateToProps, { addLike, removeBlog, addComment })(Blog)

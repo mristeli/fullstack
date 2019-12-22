@@ -27,7 +27,7 @@ const BlogList = ({ blogs }) => {
 
       {blogs && blogs.map(blog =>
         <div key={blog.id} style={blogStyle}>
-          <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+          <Link to={`/blogs/${blog.id}`}>{blog.title} {blog.author}</Link>
         </div>
       )}
     </div>

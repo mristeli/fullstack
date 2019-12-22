@@ -25,7 +25,7 @@ export const newBlog = (content) => {
 export const removeBlog = (blog) => {
   return async dispatch => {
     const id = blog.id
-    await blogService.removeBlog(id)
+    await blogService.remove(blog)
     dispatch({
       type: 'REMOVE_BLOG',
       data: { id }
@@ -33,6 +33,16 @@ export const removeBlog = (blog) => {
   }
 }
 
+export const addComment = (blog, comment) => {
+  return async dispatch => {
+    const id = blog.id
+    await blogService.addComment(blog, comment)
+    dispatch({
+      type: 'NEW_COMMENT',
+      data: { id, comment }
+    })
+  }
+}
 
 export const addLike = blog => {
   return async dispatch => {
@@ -52,14 +62,26 @@ const blogReducer = (state = [], action) => {
     return state.concat(
       action.data
     )
+  case 'REMOVE_BLOG':
+    return state.reduce((mewState, next) => {
+      return next.id === action.data.id ?
+        mewState :
+        mewState.concat(next)
+    }, [])
   case 'LIKE':
-    const id = action.data.id
     return state.reduce((newState, next) => (
-      newState.concat(next.id === id ? {
+      newState.concat(next.id === action.data.id ? {
         ...next,
-        likes : next.likes + 1
+        likes : action.data.likes
       } : next)
     ), []).sort((a, b) => b.likes - a.likes)
+  case 'NEW_COMMENT':
+    return state.reduce((newState, next) => (
+      newState.concat(next.id === action.data.id ? {
+        ...next,
+        comments : next.comments.concat(action.data.comment)
+      } : next)
+    ), [])
   default:
   }
 
