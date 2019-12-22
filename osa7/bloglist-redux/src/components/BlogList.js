@@ -7,29 +7,29 @@ import {
   Link
 } from 'react-router-dom'
 
+import { Table } from 'react-bootstrap'
+
 const BlogList = ({ blogs }) => {
   const blogFormRef = React.createRef()
-
-  const blogStyle = {
-    paddingTop: 5,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
 
   return (
     <div className='blogList'>
       <Togglable buttonLabel='new blog' ref={blogFormRef}>
         <h2>create new</h2>
-        <CreateBlogForm  />
+        <CreateBlogForm toggleVisibility={() =>  blogFormRef.current.toggleVisibility()} />
       </Togglable>
 
-      {blogs && blogs.map(blog =>
-        <div key={blog.id} style={blogStyle}>
-          <Link to={`/blogs/${blog.id}`}>{blog.title} {blog.author}</Link>
-        </div>
-      )}
+      <Table striped>
+        <tbody>
+          {blogs && blogs.map(blog =>
+            <tr key={blog.id}>
+              <td>
+                <Link to={`/blogs/${blog.id}`}>{blog.title} {blog.author}</Link>
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </Table>
     </div>
   )
 }

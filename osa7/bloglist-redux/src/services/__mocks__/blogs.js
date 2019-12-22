@@ -36,5 +36,4 @@ const getAll = () => {
 const setToken = (token) => {
 }
 
-
 export default { getAll, setToken }

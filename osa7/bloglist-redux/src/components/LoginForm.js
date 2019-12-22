@@ -9,6 +9,7 @@ import loginService from '../services/login'
 import Notification from '../components/Notification'
 import { useField } from '../hooks'
 
+import { Form, Button } from 'react-bootstrap'
 
 const LoginForm = ({ setLoggedInUser, showError, removeMessage }) => {
 
@@ -36,23 +37,19 @@ const LoginForm = ({ setLoggedInUser, showError, removeMessage }) => {
     <div className='loginForm'>
       <h2>Log in to application</h2>
       <Notification />
-      <div>
-        <form onSubmit={onSubmit}>
-          <div>
-          username
-            <input name="username"
-              {...username.attr}
-            />
-          </div>
-          <div>
-          password
-            <input name="password"
-              {...password.attr}
-            />
-          </div>
-          <button type="submit">login</button>
-        </form>
-      </div>
+      <Form onSubmit={onSubmit}>
+        <Form.Group>
+          <Form.Label>username</Form.Label>
+          <Form.Control name="username"
+            {...username.attr}
+          />
+          <Form.Label>password</Form.Label>
+          <Form.Control name="password"
+            {...password.attr}
+          />
+          <Button variant="primary" type="submit">login</Button>
+        </Form.Group>
+      </Form>
     </div>
   )
 }

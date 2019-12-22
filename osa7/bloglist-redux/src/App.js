@@ -18,7 +18,7 @@ function App ({ user,
   }, [initializeAuthentication, initializeUsers, initializeBlogs])
 
   return (
-    <div>
+    <div className="container">
       {user === null ?
         <LoginForm /> :
         <div>

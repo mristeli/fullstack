@@ -19,7 +19,7 @@ const getAll = async () => {
 }
 
 const create = async newBlog => {
-  const response =  await axios.post(baseUrl, newBlog, getConfig())
+  const response = await axios.post(baseUrl, newBlog, getConfig())
   return response.data
 }
 

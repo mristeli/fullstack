@@ -5,7 +5,8 @@ import { newBlog } from '../reducers/blogReducer'
 
 const CreateBlogForm = ({
   newBlog,
-  showMessage
+  showMessage,
+  toggleVisibility
 }) => {
   const onSubmit = async (event) => {
     event.preventDefault()
@@ -17,7 +18,7 @@ const CreateBlogForm = ({
     event.target.author.value = ''
     event.target.url.value = ''
     newBlog({ title, author, url })
-
+    toggleVisibility()
     showMessage(`a new blog ${title} by ${author} added`, 5)
   }
 
@@ -45,7 +46,13 @@ const CreateBlogForm = ({
   )
 }
 
+const mapStateToProps = (state, ownProps) => {
+  return {
+    toggleVisibility: ownProps.toggleVisibility
+  }
+}
+
 export default connect(
-  null,
+  mapStateToProps,
   { newBlog, showMessage }
 )(CreateBlogForm)

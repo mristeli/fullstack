@@ -2,6 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { addComment, addLike, removeBlog } from '../reducers/blogReducer'
 
+import { ListGroup, ListGroupItem } from 'react-bootstrap'
+
 const Blog = ({ blog, loggedInUser, addLike, removeBlog, addComment }) => {
   if ( blog === undefined ) {
     return null
@@ -37,11 +39,11 @@ const Blog = ({ blog, loggedInUser, addLike, removeBlog, addComment }) => {
       <form onSubmit={commentHandler}>
         <input type="text" name="comment"></input> <button type="submit">Add comment</button>
       </form>
-      <ul>
+      <ListGroup>
         {blog.comments && blog.comments.map((c, i) =>
-          <li key={i}>{c}</li>
+          <ListGroupItem key={i}>{c}</ListGroupItem>
         )}
-      </ul>
+      </ListGroup>
     </div>
   )
 }
