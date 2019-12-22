@@ -5,13 +5,15 @@ import { setLoggedInUser } from '../reducers/authenticationReducer'
 import { showError, removeMessage } from '../reducers/notificationReducer'
 
 import loginService from '../services/login'
-
-import Notification from '../components/Notification'
 import { useField } from '../hooks'
 
 import { Form, Button } from 'react-bootstrap'
 
-const LoginForm = ({ setLoggedInUser, showError, removeMessage }) => {
+import {
+  withRouter
+} from 'react-router-dom'
+
+const LoginForm = ({ history, setLoggedInUser, showError, removeMessage }) => {
 
   const username = useField('text')
   const password = useField('password')
@@ -28,6 +30,7 @@ const LoginForm = ({ setLoggedInUser, showError, removeMessage }) => {
       })
       removeMessage()
       setLoggedInUser(user)
+      history.push('/')
     } catch(exception) {
       showError('wrong username or password', 5)
     }
@@ -36,15 +39,16 @@ const LoginForm = ({ setLoggedInUser, showError, removeMessage }) => {
   return (
     <div className='loginForm'>
       <h2>Log in to application</h2>
-      <Notification />
       <Form onSubmit={onSubmit}>
         <Form.Group>
           <Form.Label>username</Form.Label>
           <Form.Control name="username"
+            id="username"
             {...username.attr}
           />
           <Form.Label>password</Form.Label>
           <Form.Control name="password"
+            id="password"
             {...password.attr}
           />
           <Button variant="primary" type="submit">login</Button>
@@ -57,4 +61,4 @@ const LoginForm = ({ setLoggedInUser, showError, removeMessage }) => {
 export default connect(
   null,
   { setLoggedInUser, showError, removeMessage }
-)(LoginForm)
+)(withRouter(LoginForm))

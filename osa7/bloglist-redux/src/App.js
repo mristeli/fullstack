@@ -1,13 +1,12 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 
-import LoginForm from './components/LoginForm'
 import MainView from './components/MainView'
 import { initializeAuthentication } from './reducers/authenticationReducer'
 import { initializeUsers } from './reducers/userReducer'
 import { initializeBlogs } from './reducers/blogReducer'
 
-function App ({ user,
+function App ({
   initializeAuthentication,
   initializeUsers,
   initializeBlogs }) {
@@ -19,23 +18,12 @@ function App ({ user,
 
   return (
     <div className="container">
-      {user === null ?
-        <LoginForm /> :
-        <div>
-          <MainView />
-        </div>
-      }
+      <MainView />
     </div>
   )
 }
 
-const mapStateToProps = state => {
-  return {
-    user: state.user
-  }
-}
-
 export default connect(
-  mapStateToProps,
+  null,
   { initializeAuthentication, initializeUsers, initializeBlogs }
 )(App)

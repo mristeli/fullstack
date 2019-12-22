@@ -59,29 +59,18 @@ const blogReducer = (state = [], action) => {
   case 'INIT_BLOGS':
     return action.data
   case 'NEW_BLOG':
-    return state.concat(
-      action.data
-    )
+    return state.concat(action.data)
   case 'REMOVE_BLOG':
-    return state.reduce((mewState, next) => {
-      return next.id === action.data.id ?
-        mewState :
-        mewState.concat(next)
-    }, [])
+    return state.filter(b => b.id !== action.data.id)
   case 'LIKE':
-    return state.reduce((newState, next) => (
-      newState.concat(next.id === action.data.id ? {
-        ...next,
-        likes : action.data.likes
-      } : next)
-    ), []).sort((a, b) => b.likes - a.likes)
+    return state.map(b => b.id === action.data.id ?
+      { ...b, likes : action.data.likes } : b)
+      .sort((a, b) => b.likes - a.likes)
   case 'NEW_COMMENT':
-    return state.reduce((newState, next) => (
-      newState.concat(next.id === action.data.id ? {
-        ...next,
-        comments : next.comments.concat(action.data.comment)
-      } : next)
-    ), [])
+    return state.map(b => b.id === action.data.id ?
+      { ...b,
+        comments: b.comments.concat(action.data.comment) 
+      } : b)
   default:
   }
 

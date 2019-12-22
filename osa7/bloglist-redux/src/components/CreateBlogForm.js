@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import { showMessage } from '../reducers/notificationReducer'
 import { newBlog } from '../reducers/blogReducer'
 
+import { Form, Button } from 'react-bootstrap'
+
 const CreateBlogForm = ({
   newBlog,
   showMessage,
@@ -23,26 +25,17 @@ const CreateBlogForm = ({
   }
 
   return (
-    <form onSubmit={onSubmit}>
-      <div>
-        title: <input
-          name="title"
-        />
-      </div>
-      <div>
-        author: <input
-          name="author"
-        />
-      </div>
-      <div>
-        url: <input
-          name="url"
-        />
-      </div>
-      <div>
-        <button type="submit">create</button>
-      </div>
-    </form>
+    <Form onSubmit={onSubmit}>
+      <Form.Group>
+        <Form.Label>title</Form.Label>
+        <Form.Control id="title" name="title" type="text" />
+        <Form.Label>author</Form.Label>
+        <Form.Control id="author" name="author" type="text" />
+        <Form.Label>url</Form.Label>
+        <Form.Control id="url"name="url" type="text" />
+        <Button variant="primary" id="submit" type="submit">create</Button>
+      </Form.Group>
+    </Form>
   )
 }
 

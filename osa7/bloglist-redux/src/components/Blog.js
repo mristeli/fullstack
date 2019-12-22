@@ -1,10 +1,18 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { addComment, addLike, removeBlog } from '../reducers/blogReducer'
+import { showMessage } from '../reducers/notificationReducer'
 
-import { ListGroup, ListGroupItem } from 'react-bootstrap'
+import { Card, ListGroup, ListGroupItem,
+  Form, Button } from 'react-bootstrap'
 
-const Blog = ({ blog, loggedInUser, addLike, removeBlog, addComment }) => {
+import {
+  withRouter
+} from 'react-router-dom'
+
+const Blog = ({ history,
+  blog, loggedInUser, addLike, 
+  removeBlog, addComment, showMessage }) => {
   if ( blog === undefined ) {
     return null
   }
@@ -17,6 +25,8 @@ const Blog = ({ blog, loggedInUser, addLike, removeBlog, addComment }) => {
   const removeHandler = (event) => {
     event.preventDefault()
     removeBlog(blog)
+    history.push('/')
+    showMessage(`Blog ${blog.title} removed`)
   }
 
   const commentHandler = (event) => {
@@ -27,24 +37,28 @@ const Blog = ({ blog, loggedInUser, addLike, removeBlog, addComment }) => {
   }
 
   return (
-    <div>
-      <h2>{blog.title} {blog.author}</h2>
-      <p><a href={blog.url}>{blog.url}</a></p>
-      <p>{blog.likes} {blog.likes !== 1 ? 'likes' : 'like'} <button onClick={likeHandler}>like</button></p>
-      {blog.user && <p>Added by {blog.user.name}</p>}
-      {blog.user && blog.user.username === loggedInUser.username &&
-        <p><button onClick={removeHandler}>remove</button></p>}
-
+    <Card>
+      <Card.Body>
+        <Card.Title>{blog.title} by {blog.author}</Card.Title>
+        <p><a href={blog.url}>{blog.url}</a></p>
+        <p>{blog.likes} {blog.likes !== 1 ? 'likes' : 'like'} <Button id="addLike" variant="secondary" onClick={likeHandler}>like</Button></p>
+        {blog.user && <p>Added by {blog.user.name}</p>}
+        {blog.user && blog.user.username === loggedInUser.username &&
+          <p><Button variant="secondary" onClick={removeHandler}>remove</Button></p>}
+      </Card.Body>
       <h3>comments</h3>
-      <form onSubmit={commentHandler}>
-        <input type="text" name="comment"></input> <button type="submit">Add comment</button>
-      </form>
+      <Form onSubmit={commentHandler}>
+        <Form.Group>
+          <Form.Control name="comment" type="text" />
+          <Button variant="primary" type="submit">Add comment</Button>
+        </Form.Group>
+      </Form>
       <ListGroup>
         {blog.comments && blog.comments.map((c, i) =>
           <ListGroupItem key={i}>{c}</ListGroupItem>
         )}
       </ListGroup>
-    </div>
+    </Card>
   )
 }
 
@@ -53,4 +67,5 @@ const mapStateToProps = (state, ownProps) => ({
   loggedInUser: state.user
 })
 
-export default connect(mapStateToProps, { addLike, removeBlog, addComment })(Blog)
+export default connect(mapStateToProps,
+  { addLike, removeBlog, addComment, showMessage })(withRouter(Blog))

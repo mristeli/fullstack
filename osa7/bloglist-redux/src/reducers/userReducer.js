@@ -41,9 +41,12 @@ const userReducer = (state = [], action) => {
     return state.concat(
       action.data
     )
+  case 'NEW_BLOG':
+    return state.map(u => u.id === action.data.user.id ? {
+      ...u, blogs: u.blogs.concat(action.data.id)
+    } : u)
   default:
   }
-
   return state
 }
 

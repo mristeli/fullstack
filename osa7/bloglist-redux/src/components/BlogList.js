@@ -21,10 +21,10 @@ const BlogList = ({ blogs }) => {
 
       <Table striped>
         <tbody>
-          {blogs && blogs.map(blog =>
+          {blogs && blogs.map((blog, i) =>
             <tr key={blog.id}>
               <td>
-                <Link to={`/blogs/${blog.id}`}>{blog.title} {blog.author}</Link>
+                <Link id={`blogLink${i}`} to={`/blogs/${blog.id}`}>{blog.title} {blog.author}</Link>
               </td>
             </tr>
           )}

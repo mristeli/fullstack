@@ -1,9 +1,9 @@
 const initialState = ['', -1]
 
 export const showError = (text, timeout = 5) =>
-  showMessage(text, timeout, 'error')
+  showMessage(text, timeout, 'danger')
 
-export const showMessage = (text, timeout = 5, className = 'success') => 
+export const showMessage = (text, timeout = 5, className = 'success') =>
   setNotification({
     text, className
   }, timeout)
