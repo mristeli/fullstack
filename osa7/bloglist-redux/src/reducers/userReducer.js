@@ -45,6 +45,10 @@ const userReducer = (state = [], action) => {
     return state.map(u => u.id === action.data.user.id ? {
       ...u, blogs: u.blogs.concat(action.data.id)
     } : u)
+  case 'REMOVE_BLOG':
+    return state.map(u => u.id === action.data.user.id ? {
+      ...u, blogs: u.blogs.filter(b => b.id !== action.data.id)
+    } : u)
   default:
   }
   return state

@@ -24,11 +24,10 @@ export const newBlog = (content) => {
 
 export const removeBlog = (blog) => {
   return async dispatch => {
-    const id = blog.id
     await blogService.remove(blog)
     dispatch({
       type: 'REMOVE_BLOG',
-      data: { id }
+      data: blog
     })
   }
 }
