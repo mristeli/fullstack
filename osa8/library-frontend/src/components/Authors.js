@@ -15,9 +15,6 @@ const Authors = (props) => {
     setBorn('')
   }
 
-  if (!props.show) {
-    return null
-  }
   if(props.result.loading) {
     return <div>loading...</div>
   }
@@ -46,27 +43,31 @@ const Authors = (props) => {
           )}
         </tbody>
       </table>
-      <h2>set birthyear</h2>
-      <form onSubmit={submit}>
+      {props.allowEdit && 
         <div>
-          name
-          <select
-            onChange={({ target }) => setName(target.value)}>
-            {authors.map(a => 
-              <option value={a.name}  
-                key={a.name}>{a.name}</option>
-            )}
-          </select>
+          <h2>set birthyear</h2>
+          <form onSubmit={submit}>
+            <div>
+              name
+              <select
+                onChange={({ target }) => setName(target.value)}>
+                {authors.map(a => 
+                  <option value={a.name}  
+                    key={a.name}>{a.name}</option>
+                )}
+              </select>
+            </div>
+            <div>
+              born
+              <input
+                value={born} type="number"
+                onChange={({ target }) => setBorn(target.value)}
+              />
+            </div>
+            <button type='submit'>update author</button>
+          </form>
         </div>
-        <div>
-          born
-          <input
-            value={born} type="number"
-            onChange={({ target }) => setBorn(target.value)}
-          />
-        </div>
-        <button type='submit'>update author</button>
-      </form>
+      }
     </div>
   )
 }

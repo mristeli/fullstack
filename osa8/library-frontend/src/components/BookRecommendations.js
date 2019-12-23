@@ -3,9 +3,8 @@ import React, { useState, useEffect } from 'react'
 import { gql } from 'apollo-boost'
 import { useApolloClient } from '@apollo/react-hooks'
 
-
 const ALL_BOOKS = gql`
-  query allBooksByGenre($genre: String) {
+  query allBooksByGenre($genre: String!) {
     allBooks(genre: $genre) {
       title
       published
@@ -21,45 +20,51 @@ const ALL_BOOKS = gql`
   }
 `
 
-const Books = (props) => {  
+const ME = gql`
+query {
+  me {
+   	username
+    id
+    favoriteGenre
+  }
+}
+`
+
+const BookRecommendations = (props) => {  
   const [books, setBooks] = useState([])
-  const [genres, setGenres] = useState([])
   const [genre, setGenre] = useState('')
   const client = useApolloClient()
-
+  
   useEffect(() => {
-    const fetchGenres = async (genre) => {
+    const fetchGenre = async () => {
       const { data } = await client.query({
-        query: ALL_BOOKS
+        query: ME
       })
-      setGenres(
-        data.allBooks.flatMap(b => b.genres)
-          .reduce((unique, g) => unique.includes(g) ? unique : [...unique, g], [])
-          .sort()
-      )
+      setGenre(data.me.favoriteGenre)
     }
-    fetchGenres()
-  }, [])
+    fetchGenre()
+  }, [client])
   useEffect(() => {
-    const showBooks = async (genre) => {
+    const showRecommendations = async (genre) => {
       const { data } = await client.query({
         query: ALL_BOOKS,
-        variables: genre ? { genre } : {}
+        variables: { genre }
       })
       setBooks(data.allBooks)
     }
-    showBooks(genre)
+    if(genre) {
+      showRecommendations(genre)
+    }
   }, [genre, client])
 
-
-  if (!books) {
-    return null
+  if(!books) {
+    return <div>loading...</div>
   }
-
+  
   return (
     <div>
-      <h2>books</h2>
-      {genre && <p>in genre <b>{genre}</b></p>}
+      <h2>recommendations</h2>
+      <p>in your favorite genre <b>{genre}</b></p>
 
       <table>
         <tbody>
@@ -77,13 +82,8 @@ const Books = (props) => {
           )}
         </tbody>
       </table>
-      <h2>genres</h2>
-      <p>
-        {genres.map(g => <button key={g} onClick={() => setGenre(g)}>{g}</button>)}
-      </p>
-      <p><button key="all" onClick={() => setGenre(null)}>Show all genres</button></p>
     </div>
   )
 }
 
-export default Books
+export default BookRecommendations
