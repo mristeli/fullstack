@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 
 import { gql } from 'apollo-boost'
-import { useApolloClient } from '@apollo/react-hooks'
+import { useApolloClient, useLazyQuery } from '@apollo/react-hooks'
 
 const ALL_BOOKS = gql`
   query allBooksByGenre($genre: String!) {
@@ -31,36 +31,29 @@ query {
 `
 
 const BookRecommendations = (props) => {  
-  const [books, setBooks] = useState([])
-  const [genre, setGenre] = useState('')
+  const [genre, setGenre] = useState('')  
+  const [execute, { loading, data }] = useLazyQuery(ALL_BOOKS)
+
   const client = useApolloClient()
   
   useEffect(() => {
     const fetchGenre = async () => {
       const { data } = await client.query({
         query: ME
-      })
+      }) 
       setGenre(data.me.favoriteGenre)
     }
     fetchGenre()
-  }, [client])
+  }, [client, execute])
   useEffect(() => {
-    const showRecommendations = async (genre) => {
-      const { data } = await client.query({
-        query: ALL_BOOKS,
-        variables: { genre }
-      })
-      setBooks(data.allBooks)
-    }
-    if(genre) {
-      showRecommendations(genre)
-    }
-  }, [genre, client])
-
-  if(!books) {
+    execute( 
+      { variables: { genre } }     
+    )
+  }, [genre, execute])
+  if(!genre || loading) {
     return <div>loading...</div>
   }
-  
+
   return (
     <div>
       <h2>recommendations</h2>
@@ -73,7 +66,7 @@ const BookRecommendations = (props) => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {books.map(b =>
+          {data.allBooks.map(b =>
             <tr key={b.title}>
               <td>{b.title}</td>
               <td>{b.author.name}</td>

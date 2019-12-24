@@ -91,16 +91,14 @@ const App = () => {
   const client = useApolloClient()
 
   const [message, setMessage] = useState(null)
-
   const [token, setToken] = useState(null)
   const [page, setPage] = useState('authors')
-  
+
   useEffect(() => {
     if(localStorage.getItem('user-token')) {
       setToken(localStorage.getItem('user-token'))
     }
   }, [])
-
 
   const notify = (message) => {
     setMessage(message)
@@ -109,17 +107,11 @@ const App = () => {
     }, 5000)
   }
 
-
   const updateCacheWith = (addedBook) => {
     const includedIn = (set, object) => 
-      set.map(p => p.id).includes(object.id)  
+      set.map(p => p.id).includes(object.id)
 
-    let dataInStore = { allBooks: [],
-      allAuthors: [] }
-    try {
-      dataInStore = client.readQuery({ query: ALL_BOOKS })
-    } catch (error) {
-    }
+    let dataInStore = client.readQuery({ query: ALL_BOOKS })
     if (!includedIn(dataInStore.allBooks, addedBook)) {
       client.writeQuery({
         query: ALL_BOOKS,
@@ -128,16 +120,17 @@ const App = () => {
       addedBook.genres.forEach(genre => {
         try {
           dataInStore = client.readQuery({ 
+              query: ALL_BOOKS,
+              variables: { genre }
+          })
+          console.log('dataInStore', dataInStore.allBooks);
+          client.writeQuery({
             query: ALL_BOOKS,
-            variables: { genre }
+            variables: { genre },
+            data: { allBooks : dataInStore.allBooks.concat(addedBook) }
           })
         } catch (error) {
         }
-        client.writeQuery({
-          query: ALL_BOOKS,
-          variables: { genre },
-          data: dataInStore.allBooks.concat(addedBook)
-        })
       })
     }   
   }
@@ -145,12 +138,14 @@ const App = () => {
   useSubscription(BOOK_ADDED, {
     onSubscriptionData: ({ subscriptionData }) => {
       const addedBook = subscriptionData.data.bookAdded
-      notify(`Someone just added a book ${addedBook.title}`)
+      notify(`Book ${addedBook.title} added`)
       updateCacheWith(subscriptionData.data.bookAdded)
     }
   })
 
+  useQuery(ALL_BOOKS)
   const authors = useQuery(ALL_AUTHORS)
+  
   const [addBook] = useMutation(ADD_BOOK, {
     update: (store, response) => {
       updateCacheWith(response.data.addBook)
