@@ -6,24 +6,39 @@ import NewBook from './components/NewBook'
 import BookRecommendations from './components/BookRecommendations'
 
 import { gql } from 'apollo-boost'
-import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks'
+import { useQuery, useSubscription, useMutation, useApolloClient } from '@apollo/react-hooks'
+
+const BOOK_DETAILS = gql`
+fragment BookDetails on Book {
+  title
+  published
+  id
+  genres
+  author {
+    name
+    id
+  }
+}
+`
 
 const ALL_BOOKS = gql`
   query allBooksByGenre($genre: String) {
     allBooks(genre: $genre) {
-      title
-      published
-      id
-      genres
-      author {
-        name
-        id
-        born
-        bookCount
-      }
+      ...BookDetails
     }
   }
+  ${BOOK_DETAILS}
 `
+
+const BOOK_ADDED = gql`
+  subscription {
+    bookAdded {
+      ...BookDetails
+    }
+  }
+  ${BOOK_DETAILS}
+`
+
 
 const ALL_AUTHORS = gql`
 {
@@ -44,16 +59,12 @@ mutation addBook($title: String!, $author: String!, $published: Int!, $genres: [
     published: $published,
     genres: $genres
   ) {
-    title
-    published
-    author {
-      name
-    }
-    genres
-    id
+    ...BookDetails
   }
 }
+${BOOK_DETAILS}
 `
+
 const EDIT_AUTHOR = gql`
 mutation editAuthor($name: String!, $born: Int!) {
   editAuthor(
@@ -79,38 +90,70 @@ const LOGIN = gql`
 const App = () => {
   const client = useApolloClient()
 
+  const [message, setMessage] = useState(null)
+
   const [token, setToken] = useState(null)
   const [page, setPage] = useState('authors')
-
+  
   useEffect(() => {
     if(localStorage.getItem('user-token')) {
       setToken(localStorage.getItem('user-token'))
     }
   }, [])
 
+
+  const notify = (message) => {
+    setMessage(message)
+    setTimeout(() => {
+      setMessage(null)
+    }, 5000)
+  }
+
+
+  const updateCacheWith = (addedBook) => {
+    const includedIn = (set, object) => 
+      set.map(p => p.id).includes(object.id)  
+
+    let dataInStore = { allBooks: [],
+      allAuthors: [] }
+    try {
+      dataInStore = client.readQuery({ query: ALL_BOOKS })
+    } catch (error) {
+    }
+    if (!includedIn(dataInStore.allBooks, addedBook)) {
+      client.writeQuery({
+        query: ALL_BOOKS,
+        data: { allBooks : dataInStore.allBooks.concat(addedBook) }
+      })
+      addedBook.genres.forEach(genre => {
+        try {
+          dataInStore = client.readQuery({ 
+            query: ALL_BOOKS,
+            variables: { genre }
+          })
+        } catch (error) {
+        }
+        client.writeQuery({
+          query: ALL_BOOKS,
+          variables: { genre },
+          data: dataInStore.allBooks.concat(addedBook)
+        })
+      })
+    }   
+  }
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      const addedBook = subscriptionData.data.bookAdded
+      notify(`Someone just added a book ${addedBook.title}`)
+      updateCacheWith(subscriptionData.data.bookAdded)
+    }
+  })
+
   const authors = useQuery(ALL_AUTHORS)
   const [addBook] = useMutation(ADD_BOOK, {
     update: (store, response) => {
-      const dataInStore = store.readQuery({ 
-        query: ALL_BOOKS
-      })
-      dataInStore.allBooks.push(response.data.addBook)
-      store.writeQuery({
-        query: ALL_BOOKS,
-        data: dataInStore
-      })
-      response.data.addBook.genres.forEach(genre => {
-        const dataInStore = store.readQuery({ 
-          query: ALL_BOOKS,
-          variables: { genre }
-        })
-        dataInStore.allBooks.push(response.data.addBook)
-        store.writeQuery({
-          query: ALL_BOOKS,
-          variables: { genre },
-          data: dataInStore
-        })
-      })
+      updateCacheWith(response.data.addBook)
     }
   })
   const [setBirth] = useMutation(EDIT_AUTHOR)
@@ -123,8 +166,14 @@ const App = () => {
     client.resetStore()
   }
 
+  const Notification = () => message &&
+    <div style={{ color: 'green' }}>
+      {message}
+    </div>
+
   return (
     <div>
+      <Notification />
       <div>
         <button onClick={() => setPage('authors')}>authors</button>
         <button onClick={() => setPage('books')}>books</button>

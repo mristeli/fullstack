@@ -39,7 +39,7 @@ const Books = (props) => {
       )
     }
     fetchGenres()
-  }, [])
+  }, [client])
   useEffect(() => {
     const showBooks = async (genre) => {
       const { data } = await client.query({
